@@ -1,11 +1,12 @@
 # Site wide configuration
 
-title: Recurrent Ramblings
+title: Back Propaganda
 locale: en_US
 description: A few ponderings on Machine Learning
 logo: site-logo.png
 search: true
 url: https://jramapuram.github.io
+#url: http://localhost:4000
 
 # Jekyll configuration
 
@@ -26,7 +27,8 @@ kramdown:
   footnote_nr: 1
   entity_output: as_char
   toc_levels: 1..2
-  use_coderay: false
+  use_coderay: true
+  #enable_coderay: true
 
 mathjax: true
 comments: true

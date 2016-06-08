@@ -16,6 +16,9 @@ GEM
       mercenary (~> 0.3.3)
       rouge (~> 1.7)
       safe_yaml (~> 1.0)
+    jekyll-compose (0.4.1)
+      jekyll (>= 2.5.0)
+    jekyll-feed (0.5.1)
     jekyll-gist (1.4.0)
       octokit (~> 4.2)
     jekyll-sass-converter (1.4.0)
@@ -48,6 +51,8 @@ PLATFORMS
 
 DEPENDENCIES
   jekyll
+  jekyll-compose
+  jekyll-feed
   jekyll-gist
   jekyll-sitemap
 
