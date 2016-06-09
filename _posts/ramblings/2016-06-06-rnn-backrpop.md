@@ -39,14 +39,14 @@ $$
 
 We leave the loss $$\mathcal{L}$$ to be arbitrary for generalization purposes.
 An example loss could be an L2 loss for regression or perhaps a cross-entropy loss for classification.
-We leave the sizing in transpose weight notation because it keeps logic consistent with data being in the shape of [batch_size, feature]
+We leave the sizing in **transpose-weight** notation because it keeps logic consistent with data being in the shape of [batch_size, feature]
 
 # Backpropagation Through Time
 **The chain rule for the final ANN [i.e. the emitter of $$\hat{y}_t$$]:**
 
 $$
 \begin{aligned}
-\frac{\delta\mathcal{L}}{\delta W_{y_t}^T} &= \frac{\delta \mathcal{L}}{\delta \hat{y}_t} \frac{\delta\hat{y}_t}{\delta W_{y_t}^T} = [\delta_t^{Loss}\odot\sigma_2^\prime(h_tW_{y_t}^T + b_{y_t})]^Th_t \ \ = [\delta_t^{Loss}\odot\sigma_2^\prime(z_{y_t})]^T h_t \\
+\frac{\delta\mathcal{L}}{\delta W_{y_t}} &= \frac{\delta \mathcal{L}}{\delta \hat{y}_t} \frac{\delta\hat{y}_t}{\delta W_{y_t}} = [\delta_t^{Loss}\odot\sigma_2^\prime(h_tW_{y_t}^T + b_{y_t})]^Th_t \ \ = [\delta_t^{Loss}\odot\sigma_2^\prime(z_{y_t})]^T h_t \\
 \frac{\delta\mathcal{L}}{\delta b_{y_t}} &= \frac{\delta\mathcal{L}}{\delta\hat{y}_t} \frac{\delta\hat{y}_t} {\delta b_{y_t}} = \sum_{batch}[\delta_t^{Loss}\odot\sigma_2^\prime(h_tW_{y_t}^T + b_{y_t})] = \sum_{batch}[\delta_t^{Loss}\odot\sigma_2^\prime(z_{y_t})]
 \end{aligned}
 $$
@@ -64,8 +64,8 @@ $$
 
 $$
 \begin{aligned}
-\frac{\delta\mathcal{L}}{\delta W_{h_t}^T} &= \frac{\delta \mathcal{L}}{\delta \hat{y}_t} \frac{\delta\hat{y}_t}{\delta h_t} \frac{\delta h_t}{\delta W_{h_t}} = [\delta_t^{L-1}\odot\sigma_1^\prime(a_t^0W_{h_t}^T + h_{t-1}U_{h_t}^T + b_{h_t})]^Ta_t^0 \ \ \ = [\delta_t^{L-1}\odot\sigma_1^\prime(z_{h_{t}})]^Ta_t^0 \\
-\frac{\delta\mathcal{L}}{\delta U_{h_t}^T} &= \frac{\delta \mathcal{L}}{\delta \hat{y}_t} \frac{\delta\hat{y}_t}{\delta h_t} \frac{\delta h_t}{\delta U_{h_t}} = [\delta_t^{L-1}\odot\sigma_1^\prime(a_t^0W_{h_t}^T + h_{t-1}U_{h_t}^T + b_{h_t})]^Th_{t-1} = [\delta_t^{L-1}\odot\sigma_1^\prime(z_{h_{t}})]^Th_{t-1} \\
+\frac{\delta\mathcal{L}}{\delta W_{h_t}} &= \frac{\delta \mathcal{L}}{\delta \hat{y}_t} \frac{\delta\hat{y}_t}{\delta h_t} \frac{\delta h_t}{\delta W_{h_t}} = [\delta_t^{L-1}\odot\sigma_1^\prime(a_t^0W_{h_t}^T + h_{t-1}U_{h_t}^T + b_{h_t})]^Ta_t^0 \ \ \ = [\delta_t^{L-1}\odot\sigma_1^\prime(z_{h_{t}})]^Ta_t^0 \\
+\frac{\delta\mathcal{L}}{\delta U_{h_t}} &= \frac{\delta \mathcal{L}}{\delta \hat{y}_t} \frac{\delta\hat{y}_t}{\delta h_t} \frac{\delta h_t}{\delta U_{h_t}} = [\delta_t^{L-1}\odot\sigma_1^\prime(a_t^0W_{h_t}^T + h_{t-1}U_{h_t}^T + b_{h_t})]^Th_{t-1} = [\delta_t^{L-1}\odot\sigma_1^\prime(z_{h_{t}})]^Th_{t-1} \\
 \frac{\delta\mathcal{L}}{\delta b_{h_t}} &= \frac{\delta \mathcal{L}}{\delta \hat{y}_t} \frac{\delta\hat{y}_t}{\delta h_t} \frac{\delta h_t}{\delta b_{h_t}} = \sum_{batch}[\delta_t^{L-1}\odot\sigma_1^\prime(a_t^0W_{h_t}^T + h_{t-1}U_{h_t}^T + b_{h_t})] \ \ \ = \sum_{batch}[\delta_t^{L-1}\odot\sigma_1^\prime(z_{h_{t}})]
 \end{aligned}
 $$
@@ -100,7 +100,7 @@ $$
 
 $$
 \begin{aligned}
-\frac{\delta\mathcal{L}}{\delta W_{x_t^0}^T} &= \frac{\delta \mathcal{L}}{\delta \hat{y}_t} \frac{\delta\hat{y}_t}{\delta h_t} \frac{\delta h_t}{\delta a_t^0} \frac{\delta a_t^0}{\delta W_{x_t^0}^T} = [\delta_t^{L-2}\odot\sigma_0^\prime(x_t W_{x_t}^T + b_{x_t})]^T x_t = [\delta_t^{L-2} \odot \sigma_0^\prime(z_{x_t})]^T x_t \\
+\frac{\delta\mathcal{L}}{\delta W_{x_t^0}} &= \frac{\delta \mathcal{L}}{\delta \hat{y}_t} \frac{\delta\hat{y}_t}{\delta h_t} \frac{\delta h_t}{\delta a_t^0} \frac{\delta a_t^0}{\delta W_{x_t^0}} = [\delta_t^{L-2}\odot\sigma_0^\prime(x_t W_{x_t}^T + b_{x_t})]^T x_t = [\delta_t^{L-2} \odot \sigma_0^\prime(z_{x_t})]^T x_t \\
 \frac{\delta\mathcal{L}}{\delta b_{x_t^0}^T} &= \frac{\delta \mathcal{L}}{\delta \hat{y}_t} \frac{\delta\hat{y}_t}{\delta h_t} \frac{\delta h_t}{\delta a_t^0} \frac{\delta a_t^0}{\delta b_{x_t^0}^T} = \sum_{batch}[\delta_t^{L-2}\odot\sigma_0^\prime(x_t W_{x_t}^T + b_{x_t})] = \sum_{batch}[\delta_t^{L-2} \odot \sigma_0^\prime(z_{x_t})]
 \end{aligned}
 $$
