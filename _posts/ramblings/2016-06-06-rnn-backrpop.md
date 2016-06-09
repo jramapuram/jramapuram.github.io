@@ -2,6 +2,7 @@
 layout: post
 title: RNN Backprop Through Time Equations
 categories: ramblings
+comments: true
 ---
 
 Vanilla RNN's are overviewed in detail in quite a few works of machine learning literature. However, I find that some of the intricate details to be a lacking. Particularly with what happens with layers surrounding the RNN layer. Furthermore when I first started I had questions like :
@@ -144,3 +145,7 @@ So to revisit the questions posed earlier:
  - `Do we need to iterate all layers backprop_interval times?` Yes, you need to get all the loss vectors for the corresponding input minibatches (at each timestep).
  - `Does every layer need to hold a list of inputs / outputs for each backprop_interval?` Yes. SGD updates are only done after backprop_interval forward pass operations. Since this is the case each layer will need to hold the input / output mapping for each one of those forward passes. This is what makes an RNN trained with backprop-through-time memory intensive as the memory scales with the length of the BPTT interval.
  - `Do we need backprop_interval number of weights for the RNN layer?` No! They are shared weights/biases between all the recurrent layers and they are updated in one fail swoop!
+
+## Issues
+
+If you find any errors with any of the math or logic here please leave a comment below.
