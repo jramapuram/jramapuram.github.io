@@ -13,6 +13,8 @@ Vanilla RNN's are overviewed in detail in quite a few works of machine learning 
 
  For this reason we will work through the backprop-through-time equations for an RNN with a prior and post ANN layer and see how we can cache/reuse certain parameters.
 
+ ![RNN_Diag]({{ site.url }}/images/rnn_diag.png)
+
 # Forward Propagation
 
 It's always best to start off defining what each variable means and assume a sample sizing.\\
@@ -21,7 +23,7 @@ This ensures that we get our dimensions right along the way.
 | Variable Definition | Assumed Sizing |
 |---------------------|----------------|
 |$$x_t$$: input at time t | [128 x 10] |
-|$$a_t^0$$: $ANN_0$$ activation at time t| [128 x 20] |
+|$$a_t^0$$: $$ANN_0$$ activation at time t| [128 x 20] |
 |$$h_t$$: rnn output at time t | [128 x 5] |
 |$$W_{x_t}^T, W_{h_t}^T, W_{y_t}^T$$: Weights for $$ANN_0$$, RNN and $$ANN_1$$ | [10 x 20] , [20 x 5], [5 x 100] |
 |$$U_{h_t}^T$$: Recurrent weights at time t | [5 x 5] |
