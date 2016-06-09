@@ -21,6 +21,7 @@ This ensures that we get our dimensions right along the way.
 | Variable Definition | Assumed Sizing |
 |---------------------|----------------|
 |$$x_t$$: input at time t | [128 x 10] |
+|$$a_t^0$$: $ANN_0$$ activation at time t| [128 x 20] |
 |$$h_t$$: rnn output at time t | [128 x 5] |
 |$$W_{x_t}^T, W_{h_t}^T, W_{y_t}^T$$: Weights for $$ANN_0$$, RNN and $$ANN_1$$ | [10 x 20] , [20 x 5], [5 x 100] |
 |$$U_{h_t}^T$$: Recurrent weights at time t | [5 x 5] |
@@ -121,6 +122,7 @@ This is left as an exercise to the reader.
 |$$\frac{\delta\mathcal{L}}{\delta b_{h_t}}$$ : derivative of the RNN's bias vector| [5] |
 |$$\frac{\delta\mathcal{L}}{\delta W_{x_t}^T}$$ : derivative of $$ANN_0$$'s weight matrix| [10 x 20]|
 |$$\frac{\delta\mathcal{L}}{\delta b_{x_t}}$$ : derivative of $$ANN_0$$'s bias vector | [20] |
+|$$\delta_t^{Loss}$$ : loss delta | [128 x 100] |
 |$$\delta_t^{L-1}$$ : delta from $$ANN_1$$ to RNN | [128 x 5] |
 |$$\delta_t^{L-2}$$ : delta from RNN to $$ANN_0$$ | [128 x 20] |
 
