@@ -104,8 +104,8 @@ $$
 
 $$
 \begin{aligned}
-\frac{\delta\mathcal{L}}{\delta W_{x_t^0}} &= \frac{\delta \mathcal{L}}{\delta \hat{y}_t} \frac{\delta\hat{y}_t}{\delta h_t} \frac{\delta h_t}{\delta a_t^0} \frac{\delta a_t^0}{\delta W_{x_t^0}} = [\delta_t^{L-2}\odot\sigma_0^\prime(x_t W_{x_t}^T + b_{x_t})]^T x_t = [\delta_t^{L-2} \odot \sigma_0^\prime(z_{x_t})]^T x_t \\
-\frac{\delta\mathcal{L}}{\delta b_{x_t^0}^T} &= \frac{\delta \mathcal{L}}{\delta \hat{y}_t} \frac{\delta\hat{y}_t}{\delta h_t} \frac{\delta h_t}{\delta a_t^0} \frac{\delta a_t^0}{\delta b_{x_t^0}^T} = \sum_{batch}[\delta_t^{L-2}\odot\sigma_0^\prime(x_t W_{x_t}^T + b_{x_t})] = \sum_{batch}[\delta_t^{L-2} \odot \sigma_0^\prime(z_{x_t})]
+\frac{\delta\mathcal{L}}{\delta W_{x_t}} &= \frac{\delta \mathcal{L}}{\delta \hat{y}_t} \frac{\delta\hat{y}_t}{\delta h_t} \frac{\delta h_t}{\delta a_t^0} \frac{\delta a_t^0}{\delta W_{x_t}} = [\delta_t^{L-2}\odot\sigma_0^\prime(x_t W_{x_t}^T + b_{x_t})]^T x_t = [\delta_t^{L-2} \odot \sigma_0^\prime(z_{x_t})]^T x_t \\
+\frac{\delta\mathcal{L}}{\delta b_{x_t}} &= \frac{\delta \mathcal{L}}{\delta \hat{y}_t} \frac{\delta\hat{y}_t}{\delta h_t} \frac{\delta h_t}{\delta a_t^0} \frac{\delta a_t^0}{\delta b_{x_t}} = \sum_{batch}[\delta_t^{L-2}\odot\sigma_0^\prime(x_t W_{x_t}^T + b_{x_t})] = \sum_{batch}[\delta_t^{L-2} \odot \sigma_0^\prime(z_{x_t})]
 \end{aligned}
 $$
 
