@@ -71,7 +71,7 @@ A key point that makes the RNN different from a standard ANN is that the derivat
 
 $$
 \begin{aligned}
-\frac{\delta h_t}{\delta h_{t-1}} &= \sigma_1^\prime(a_t^0W_{h_t}^T + h_{t-1}U_{h_t}^T + b_{h_t}) U_{h_t}^T \ = \sigma_1^\prime(z_{h_t}) U_{h_t}^T
+\frac{\delta h_t}{\delta h_{t-1}} &= \sigma_1^\prime(a_t^0W_{h_t}^T + h_{t-1}U_{h_t}^T + b_{h_t}) U_{h_t} \ = \sigma_1^\prime(z_{h_t}) U_{h_t}
 \end{aligned}
 $$
 
