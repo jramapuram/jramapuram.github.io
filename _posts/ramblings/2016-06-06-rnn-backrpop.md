@@ -10,6 +10,7 @@ Vanilla RNN's are overviewed in detail in quite a few works of machine learning 
  - `Do we need to iterate all layers backprop_interval times?`
  - `Does every layer need to hold a list of inputs / outputs for each backprop_interval?`
  - `Do we need backprop_interval number of weights for the RNN layer?`
+ - `Do we need to cache all the state derivatives of the RNN layer?`
 
  For this reason we will work through the backprop-through-time equations for an RNN with a prior and post ANN layer and see how we can cache/reuse certain parameters.
 
@@ -66,11 +67,33 @@ $$
 
 **The chain rule for the RNN:**
 
+A key point that makes the RNN different from a standard ANN is that the derivative of the hidden state is sent backwards through time and compounded through a simple addition operation. More formally this means:
+
 $$
 \begin{aligned}
-\frac{\delta\mathcal{L}}{\delta W_{h_t}} &= \frac{\delta \mathcal{L}}{\delta \hat{y}_t} \frac{\delta\hat{y}_t}{\delta h_t} \frac{\delta h_t}{\delta W_{h_t}} = [\delta_t^{L-1}\odot\sigma_1^\prime(a_t^0W_{h_t}^T + h_{t-1}U_{h_t}^T + b_{h_t})]^Ta_t^0 \ \ \ = [\delta_t^{L-1}\odot\sigma_1^\prime(z_{h_{t}})]^Ta_t^0 \\
-\frac{\delta\mathcal{L}}{\delta U_{h_t}} &= \frac{\delta \mathcal{L}}{\delta \hat{y}_t} \frac{\delta\hat{y}_t}{\delta h_t} \frac{\delta h_t}{\delta U_{h_t}} = [\delta_t^{L-1}\odot\sigma_1^\prime(a_t^0W_{h_t}^T + h_{t-1}U_{h_t}^T + b_{h_t})]^Th_{t-1} = [\delta_t^{L-1}\odot\sigma_1^\prime(z_{h_{t}})]^Th_{t-1} \\
-\frac{\delta\mathcal{L}}{\delta b_{h_t}} &= \frac{\delta \mathcal{L}}{\delta \hat{y}_t} \frac{\delta\hat{y}_t}{\delta h_t} \frac{\delta h_t}{\delta b_{h_t}} = \sum_{batch}[\delta_t^{L-1}\odot\sigma_1^\prime(a_t^0W_{h_t}^T + h_{t-1}U_{h_t}^T + b_{h_t})] \ \ \ = \sum_{batch}[\delta_t^{L-1}\odot\sigma_1^\prime(z_{h_{t}})]
+\frac{\delta h_t}{\delta h_{t-1}} &= \sigma_1^\prime(a_t^0W_{h_t}^T + h_{t-1}U_{h_t}^T + b_{h_t}) U_{h_t}^T \ = \sigma_1^\prime(z_{h_t}) U_{h_t}^T
+\end{aligned}
+$$
+
+This value is sent backwards through time from the final BPTT time step ($$T_f$$ below) until till time t=0.
+In computation terms this means that $$\frac{\delta {h_t}}{\delta h_{t-1}}$$ needs to be cached and added to itself.
+Listed below is an example of two time steps of accumulation of the hidden state:
+
+$$
+\begin{aligned}
+\Delta h_{T_f} &= \frac{\delta h_{T_f}}{\delta h_{T_{f-1}}} \\
+\Delta h_{T_{f-1}} &= \Delta h_{T_f} + \frac{\delta h_{T_{f-1}}}{\delta h_{T_{f-2}}}
+\end{aligned}
+$$
+
+You can see below that this equation is
+This process is repeated up till the last unroll after which the hidden state's derivative accumulator is zero'd out (you can also do this when you zero out the gradients in the optimizer).
+
+$$
+\begin{aligned}
+\frac{\delta\mathcal{L}}{\delta W_{h_t}} &= \frac{\delta \mathcal{L}}{\delta \hat{y}_t} \frac{\delta\hat{y}_t}{\delta h_t} \frac{\delta h_t}{\delta W_{h_t}} = [(\delta_t^{L-1} + \Delta h_t)\odot\sigma_1^\prime(a_t^0W_{h_t}^T + h_{t-1}U_{h_t}^T + b_{h_t})]^Ta_t^0 \ \ \ = [(\delta_t^{L-1} + \Delta h_t)\odot\sigma_1^\prime(z_{h_{t}})]^Ta_t^0 \\
+\frac{\delta\mathcal{L}}{\delta U_{h_t}} &= \frac{\delta \mathcal{L}}{\delta \hat{y}_t} \frac{\delta\hat{y}_t}{\delta h_t} \frac{\delta h_t}{\delta U_{h_t}} = [(\delta_t^{L-1} + \Delta h_t)\odot\sigma_1^\prime(a_t^0W_{h_t}^T + h_{t-1}U_{h_t}^T + b_{h_t})]^Th_{t-1} = [(\delta_t^{L-1} + \Delta h_t)\odot\sigma_1^\prime(z_{h_{t}})]^Th_{t-1} \\
+\frac{\delta\mathcal{L}}{\delta b_{h_t}} &= \frac{\delta \mathcal{L}}{\delta \hat{y}_t} \frac{\delta\hat{y}_t}{\delta h_t} \frac{\delta h_t}{\delta b_{h_t}} = \sum_{batch}[(\delta_t^{L-1} + \Delta h_t)\odot\sigma_1^\prime(a_t^0W_{h_t}^T + h_{t-1}U_{h_t}^T + b_{h_t})] \ \ \ = \sum_{batch}[(\delta_t^{L-1} + \Delta h_t)\odot\sigma_1^\prime(z_{h_{t}})]
 \end{aligned}
 $$
 
@@ -96,7 +119,7 @@ The RNN layer will emit $$\delta_t^{L-2}$$ which will be used to update the para
 
 $$
 \begin{aligned}
-\delta_t^{L-2} &= \frac{\delta\mathcal{L}}{\delta\hat{y}_t} \frac{\delta\hat{y}_t}{\delta h_t} \frac{\delta h_t}{\delta a_t^0} = [\delta_t^{L-1}\odot\sigma_1^\prime(z_{h_t})]W_{h_t} \\
+\delta_t^{L-2} &= \frac{\delta\mathcal{L}}{\delta\hat{y}_t} \frac{\delta\hat{y}_t}{\delta h_t} \frac{\delta h_t}{\delta a_t^0} = [(\delta_t^{L-1} + \Delta h_t)\odot\sigma_1^\prime(z_{h_t})]W_{h_t} \\
 \end{aligned}
 $$
 
@@ -149,6 +172,7 @@ So to revisit the questions posed earlier:
  - `Do we need to iterate all layers backprop_interval times?` Yes, you need to get all the loss vectors for the corresponding input minibatches (at each timestep).
  - `Does every layer need to hold a list of inputs / outputs for each backprop_interval?` Yes. SGD updates are only done after backprop_interval forward pass operations. Since this is the case each layer will need to hold the input / output mapping for each one of those forward passes. This is what makes an RNN trained with backprop-through-time memory intensive as the memory scales with the length of the BPTT interval.
  - `Do we need backprop_interval number of weights for the RNN layer?` No! They are shared weights/biases between all the recurrent layers and they are updated in one fail swoop!
+ - `Do we need to cache all the state derivatives of the RNN layer?` No! Since they are compounded via a simple addition operator you merely need to keep one value and recursively add to it.
 
 ## Issues
 

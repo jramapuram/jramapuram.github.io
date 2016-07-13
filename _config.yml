@@ -5,8 +5,8 @@ locale: en_US
 description: A few ponderings on Machine Learning
 logo: site-logo.png
 search: true
-url: https://jramapuram.github.io
-#url: http://localhost:4000
+#url: https://jramapuram.github.io
+url: http://localhost:4000
 
 # Jekyll configuration
 
@@ -42,13 +42,13 @@ owner:
   avatar: jramapuram.jpg
   email: jason.ramapuram@gmail.com
   disqus-shortname: backpropaganda
-  twitter: #jramapuram
-  facebook: #ireallylovejason
-  github: #jramapuram
-  linkedin: #jramapuran
+  twitter:
+  facebook:
+  github: jramapuram
+  linkedin: jramapuram
   google:
-    plus: #jramapuram
-    analytics:
+    plus:
+    analytics: UA-80699377-1
     verify:
     ad-client:
     ad-slot:
