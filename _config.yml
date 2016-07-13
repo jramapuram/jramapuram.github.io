@@ -5,8 +5,8 @@ locale: en_US
 description: A few ponderings on Machine Learning
 logo: site-logo.png
 search: true
-#url: https://jramapuram.github.io
-url: http://localhost:4000
+url: https://jramapuram.github.io
+#url: http://localhost:4000
 
 # Jekyll configuration
 
