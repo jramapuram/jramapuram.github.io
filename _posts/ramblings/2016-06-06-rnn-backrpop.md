@@ -86,7 +86,6 @@ $$
 \end{aligned}
 $$
 
-You can see below that this equation is
 This process is repeated up till the last unroll after which the hidden state's derivative accumulator is zero'd out (you can also do this when you zero out the gradients in the optimizer).
 
 $$
